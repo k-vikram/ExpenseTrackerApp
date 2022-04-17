@@ -1,0 +1,8 @@
+{
+    "CognitoConstants": {
+        "region": "us-east-2",
+        "userPool": "us-east-2_0zFL6Y5De",
+        "clientId": "7f3fhnuqttfogg3ouorh96dl1r"
+    },
+    "BaseUrl": "https://eikyz5cux7.execute-api.us-east-2.amazonaws.com/prod/expenses"
+}
