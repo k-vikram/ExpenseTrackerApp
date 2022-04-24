@@ -1,9 +1,11 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import authReducer from './reducers/auth';
+import expensesReducer from './reducers/expenses';
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer
+    expenses: expensesReducer,
+    auth: authReducer,
   }
 })
 

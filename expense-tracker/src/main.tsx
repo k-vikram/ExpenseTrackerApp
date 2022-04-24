@@ -6,7 +6,6 @@ import { store } from './store/store';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from "react-router-dom";
 
-
 // Lets work with latest react 18
 const root = ReactDOM.createRoot(document.getElementById('root') as Element);
 root.render(
