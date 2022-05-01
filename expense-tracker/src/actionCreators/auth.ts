@@ -73,11 +73,11 @@ export const resendVerificationCode = createAsyncThunk(
   }
 )
 
-export interface ISignInResult{
+export interface ISignInResult {
   loggedInUser: {
     username: string,
     accessToken: string,
-    refreshToken:string,
+    refreshToken: string,
     idToken: string
   }
 }
@@ -96,7 +96,7 @@ export const signIn = createAsyncThunk(
           idToken: signInUserSession.idToken.jwtToken
         }
       } as ISignInResult;
-      
+
     } catch (error) {
       console.log('error signing in', error);
       return thunkApi.rejectWithValue((error as Error).message)
@@ -107,12 +107,11 @@ export const signIn = createAsyncThunk(
 
 export const signOut = createAsyncThunk(
   'auth/signOut',
-  async ({ navigate }: { navigate: NavigateFunction}, thunkApi) => {
+  async ({ navigate }: { navigate: NavigateFunction }, thunkApi) => {
     try {
       await Auth.signOut();
-      navigate('/');
-      return {};
-      
+      return { navigate } as { navigate?: NavigateFunction };
+
     } catch (error) {
       console.log('error signing in', error);
       return thunkApi.rejectWithValue((error as Error).message)

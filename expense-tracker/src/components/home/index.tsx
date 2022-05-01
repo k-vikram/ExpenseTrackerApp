@@ -12,9 +12,13 @@ import { SearchIcon } from '@heroicons/react/solid'
 import { Link, useNavigate } from 'react-router-dom'
 
 import ETIcon from '../../assets/etIcon.jpeg';
-import { signOut } from '../../actionCreators/auth'
-import { useAppDispatch } from '../../store/hooks'
+import { ISignInResult, signOut } from '../../actionCreators/auth'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import NewExpensePanel from './newExpense'
+import { getAllExpenses } from '../../actionCreators/expenses'
+import ListAllExpenses from './listExpenses'
+import { AuthState } from '../../store/storeTypes'
+
 
 const sidenavItems = [
    { name: 'Dashboard', to: '/home', icon: HomeIcon, current: true },
@@ -29,10 +33,12 @@ function classNames(...classes: string[]) {
 }
 
 const HomePage = (): React.ReactElement | null => {
+
    const [sidebarOpen, setSidebarOpen] = useState(false)
    const [newExpensePanelOpen, setNewExpensePanelOpen] = useState(false);
 
    const navigate = useNavigate();
+   const { username } = useAppSelector(MapStateToHooks)
    const dispatch = useAppDispatch();
 
    return (
@@ -156,29 +162,13 @@ const HomePage = (): React.ReactElement | null => {
                   </button>
                   <div className="flex-1 px-4 flex justify-between">
                      <div className="flex-1 flex">
-                        <form className="w-full flex md:ml-0" action="#" method="GET">
-                           <label htmlFor="search-field" className="sr-only">
-                              Search
-                           </label>
-                           <div className="relative w-full text-gray-400 focus-within:text-gray-600">
-                              <div className="absolute inset-y-0 left-0 flex items-center pointer-events-none">
-                                 <SearchIcon className="h-5 w-5" aria-hidden="true" />
-                              </div>
-                              <input
-                                 id="search-field"
-                                 className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-0 focus:border-transparent sm:text-sm"
-                                 placeholder="Search"
-                                 type="search"
-                                 name="search"
-                              />
-                           </div>
-                        </form>
                      </div>
                      <div className="ml-4 flex items-center md:ml-6">
                         <Menu as="div" className="ml-3 relative">
                            <div>
                               <Menu.Button className="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                  <span className="sr-only">Open user activities menu</span>
+                                 {username && <span className='not-sr-only hidden sm:block sm:mx-4 capitalize'>Hi, {username}</span>}
                                  <img
                                     className="h-8 w-8 rounded-full"
                                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -223,7 +213,8 @@ const HomePage = (): React.ReactElement | null => {
                      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 flex flex-col sm:flex-row items-center justify-between ">
                         <h1 className="text-2xl font-semibold text-gray-900">My Expenses</h1>
                         <div className='flex items-center justify-between'>
-                           <div className="h-6 w-6 hover:text-indigo-600 hover:cursor-pointer mx-1 ">
+                           <div className="h-6 w-6 hover:text-indigo-600 hover:cursor-pointer mx-1"
+                              onClick={() => dispatch(getAllExpenses({}))}>
                               <RefreshIcon aria-hidden="true" />
                            </div>
                            <div className="h-6 w-6 hover:text-indigo-600 hover:cursor-pointer mx-1"
@@ -235,18 +226,26 @@ const HomePage = (): React.ReactElement | null => {
                      </div>
                      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
                         <div className="py-4">
-                           <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
+                           <ListAllExpenses />
                         </div>
                      </div>
                   </div>
                </main>
             </div>
-         </div>
-         {newExpensePanelOpen && <NewExpensePanel 
+         </div >
+         {newExpensePanelOpen && <NewExpensePanel
             open={newExpensePanelOpen}
             setOpen={setNewExpensePanelOpen}
          />}
       </>
    )
 }
+
+
+const MapStateToHooks = (state: {
+   auth: AuthState;
+ }) => ({
+   username: (state.auth.signInState.entities?.loggedInUser as ISignInResult["loggedInUser"])?.username || ""
+ })
+
 export default HomePage;

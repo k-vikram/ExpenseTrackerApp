@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { signOut } from '../../actionCreators/auth';
 import { addNewExpense, deleteAnExpense, getAllExpenses } from '../../actionCreators/expenses';
 import { ExpensesState } from '../storeTypes';
 
@@ -24,7 +25,8 @@ const initialState: ExpensesState = {
 export const expensesSlice = createSlice({
     name: 'expenses',
     initialState,
-    reducers: {},
+    reducers: {
+    },
     extraReducers: (builder) => {
         builder.addCase(addNewExpense.pending, (state) => {
             state.newExpenseState.loading = 'pending';
@@ -68,7 +70,11 @@ export const expensesSlice = createSlice({
             state.deleteExpenseState.loading = initialState.deleteExpenseState.loading;
             state.deleteExpenseState.error =  typeof payload === 'string' ? payload : 'Unexpected Error. Kindly Report';
         });
+        builder.addCase(signOut.fulfilled, (state) => {
+            state.getExpensesState.entities = initialState.getExpensesState.entities;
+        });
     }
 })
+;
 
 export default expensesSlice.reducer;

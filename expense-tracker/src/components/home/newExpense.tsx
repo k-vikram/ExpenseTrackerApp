@@ -1,9 +1,9 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { Dialog, Transition } from '@headlessui/react'
 import { XIcon } from '@heroicons/react/outline'
 import { useAppDispatch } from '../../store/hooks'
-import { addNewExpense } from '../../actionCreators/expenses'
+import { addNewExpense, getAllExpenses } from '../../actionCreators/expenses'
 
 
 const NewExpensePanel = ({
@@ -23,9 +23,10 @@ const NewExpensePanel = ({
         const date = (formObjects["2"] as HTMLInputElement)?.value;
         const amount = (formObjects["3"] as HTMLInputElement)?.value;
 
-        const id = nanoid(); // Randomly generated nanoId
+        const id = Math.ceil(Math.random() * 1000000); // Randomly generated Id
     
-        dispatch(addNewExpense({ type, date, amount, id }));
+        dispatch(addNewExpense({ type, date, amount, id, callback: () => dispatch(getAllExpenses({})) }));
+        setOpen(false);
       }
 
     return (

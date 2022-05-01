@@ -31,7 +31,8 @@ const initialState: AuthState = {
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+    },
     extraReducers: (builder) => {
         builder.addCase(signUpNewUser.pending, (state) => {
             state.signUpState.loading = 'pending';
@@ -92,9 +93,11 @@ export const authSlice = createSlice({
             state.signInState.loading = 'pending';
             state.signInState.error = null;
         });
-        builder.addCase(signOut.fulfilled, (state) => {
+        builder.addCase(signOut.fulfilled, (state, { payload }) => {
             state.signInState.entities = initialState.signInState.entities;
             state.signInState.loading = initialState.signInState.loading;
+            state = initialState;
+            payload.navigate?.('/');
         });
         builder.addCase(signOut.rejected, (state, { payload }) => {
             state.signInState.loading = initialState.signInState.loading;

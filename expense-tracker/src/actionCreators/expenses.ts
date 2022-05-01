@@ -1,19 +1,20 @@
 import CONFIG from '../constants/constants.json';
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { NavigateFunction } from "react-router-dom";
+import { ISignInResult } from './auth';
 
 export interface IExpense {
-  type: string;
-  date: string;
-  amount: string;
-  id: string;
+  date: { S: string };
+  expense: { N: string };
+  expenseType: { S: string };
+  expenseId: { N: string };
 }
 
 export interface INewExpenseAttributes {
   type: string;
   date: string;
   amount: string;
-  id: string;
+  id: string | number;
   navigate?: NavigateFunction;
   callback? : () => void
 }
@@ -22,16 +23,20 @@ export const addNewExpense = createAsyncThunk(
   'expenses/addNewExpense',
   async ({ type, date, amount, id, callback }: INewExpenseAttributes, thunkApi) => {
     try {
+      const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
+      const requestHeaders: Record<string,any> =  {
+        'Content-Type': 'application/json',
+      }
+      if(authToken) { requestHeaders.Authorization = '' + authToken; }
+
       const addNewExpenseRequestBody = {
         type, date, amount, id
       };
-
+     
       const addNewExpenseResponse = await fetch(CONFIG.BaseUrl, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'mode': 'no-cors'
-        },
+       //  credentials: 'include',
+        headers: requestHeaders,
         body: JSON.stringify(addNewExpenseRequestBody)
       });
 
@@ -49,13 +54,22 @@ export const addNewExpense = createAsyncThunk(
 
 export const getAllExpenses = createAsyncThunk(
   'expenses/getAllExpenses',
-  async ({}, thunkApi) => {
+  async ({}: {}, thunkApi) => {
     try {
-     
-      const addNewExpenseResponse = await fetch(CONFIG.BaseUrl);
-      const allExpenses: IExpense[] = await addNewExpenseResponse.json();
+      const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
+      const requestHeaders: Record<string,any> =  {
+        'Content-Type': 'application/json',
+      }
+      if(authToken) { requestHeaders.Authorization = '' + authToken; }
 
-      return allExpenses;
+      const addNewExpenseResponse = await fetch(CONFIG.BaseUrl, {
+        method: 'GET',
+       //  credentials: 'include',
+        headers: requestHeaders
+      });
+      const allExpenses = await addNewExpenseResponse.json();
+
+      return allExpenses?.Items || [] as IExpense[];
 
     } catch (error) {
       console.log('error fetching all expenses', error);
@@ -68,15 +82,21 @@ export const deleteAnExpense = createAsyncThunk(
   'expenses/deleteAnExpense',
   async ({ id, callback } : Partial<INewExpenseAttributes>, thunkApi) => {
     try {
+
+      const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
+      const requestHeaders: Record<string,any> =  {
+        'Content-Type': 'application/json',
+      }
+      if(authToken) { requestHeaders.Authorization = '' + authToken; }
+
       const deleteAnExpenseRequestBody = {
         expenseId: id
       };
 
       const deleteAnExpenseResponse = await fetch(CONFIG.BaseUrl, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+       //  credentials: 'include',
+        headers: requestHeaders,
         body: JSON.stringify(deleteAnExpenseRequestBody)
       });
 
