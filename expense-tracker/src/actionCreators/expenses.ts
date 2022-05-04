@@ -24,10 +24,10 @@ export const addNewExpense = createAsyncThunk(
   async ({ type, date, amount, id, callback }: INewExpenseAttributes, thunkApi) => {
     try {
       const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
-      const requestHeaders: Record<string,any> =  {
+      const customeHeaders: Record<string,any> =  {
         'Content-Type': 'application/json',
       }
-      if(authToken) { requestHeaders.Authorization = '' + authToken; }
+      if(authToken) { customeHeaders.Authorization = '' + authToken; }
 
       const addNewExpenseRequestBody = {
         type, date, amount, id
@@ -36,7 +36,7 @@ export const addNewExpense = createAsyncThunk(
       const addNewExpenseResponse = await fetch(CONFIG.BaseUrl, {
         method: 'PUT',
        //  credentials: 'include',
-        headers: requestHeaders,
+        headers: customeHeaders,
         body: JSON.stringify(addNewExpenseRequestBody)
       });
 
@@ -57,15 +57,15 @@ export const getAllExpenses = createAsyncThunk(
   async ({}: {}, thunkApi) => {
     try {
       const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
-      const requestHeaders: Record<string,any> =  {
+      const customeHeaders: Record<string,any> =  {
         'Content-Type': 'application/json',
       }
-      if(authToken) { requestHeaders.Authorization = '' + authToken; }
+      if(authToken) { customeHeaders.Authorization = '' + authToken; }
 
       const addNewExpenseResponse = await fetch(CONFIG.BaseUrl, {
         method: 'GET',
        //  credentials: 'include',
-        headers: requestHeaders
+        headers: customeHeaders
       });
       const allExpenses = await addNewExpenseResponse.json();
 
@@ -84,10 +84,10 @@ export const deleteAnExpense = createAsyncThunk(
     try {
 
       const authToken = ((thunkApi.getState() as any).auth.signInState.entities.loggedInUser as ISignInResult["loggedInUser"])?.accessToken;
-      const requestHeaders: Record<string,any> =  {
+      const customeHeaders: Record<string,any> =  {
         'Content-Type': 'application/json',
       }
-      if(authToken) { requestHeaders.Authorization = '' + authToken; }
+      if(authToken) { customeHeaders.Authorization = '' + authToken; }
 
       const deleteAnExpenseRequestBody = {
         expenseId: id
@@ -96,7 +96,7 @@ export const deleteAnExpense = createAsyncThunk(
       const deleteAnExpenseResponse = await fetch(CONFIG.BaseUrl, {
         method: 'DELETE',
        //  credentials: 'include',
-        headers: requestHeaders,
+        headers: customeHeaders,
         body: JSON.stringify(deleteAnExpenseRequestBody)
       });
 

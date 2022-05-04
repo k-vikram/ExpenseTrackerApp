@@ -3,12 +3,14 @@ import React from "react";
 import { useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { ISignInResult } from "./actionCreators/auth";
-import AuthLayout from "./components/auth/authLayout";
+import AuthLayout from "./components/layouts/authLayout";
 import LoginPage from "./components/auth/login";
 import PageNotFound from "./components/auth/pageNotFound";
 import Register from "./components/auth/register";
 import VerifyUser from "./components/auth/verifyUser";
-import Home from "./components/home";
+import Expenses from "./components/expenses";
+import PrivateLayout from "./components/layouts/privateLayout";
+import Reports from "./components/reports";
 import { useAppSelector } from "./store/hooks";
 import { AuthState } from "./store/storeTypes";
 
@@ -22,7 +24,8 @@ const App = (): React.ReactElement | null => {
         <Route path="register" element={<Register />} />
         <Route path="verify" element={<VerifyUser />} />
       </Route>
-      <Route path="home" element={<PrivateRoute element={<Home />} />} />
+      <Route path="home" element={<PrivateRoute element={<Expenses />} />} />
+      <Route path="reports" element={<PrivateRoute element={<Reports />} />} />
     </Route>
     <Route path="*" element={<AuthLayout>
       <PageNotFound />
@@ -50,9 +53,9 @@ const PrivateRoute = ({
     }
   }, [])
 
-  return <>
+  return <PrivateLayout>
     {element || null}
-  </>
+  </PrivateLayout>
 }
 
 const DefaultRoute = (): React.ReactElement | null => {
