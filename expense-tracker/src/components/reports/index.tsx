@@ -20,7 +20,7 @@ const Reports = (): JSX.Element | null => {
 
     const dispatch = useAppDispatch();
     const { getExpensesState } = useAppSelector(MapStateToPropsHook);
-    const { loading: loadingExpenses, error, entities: expensesList } = getExpensesState;
+    const { entities: expensesList } = getExpensesState;
 
     useEffect(() => {
         if (!expensesList || expensesList.length === 0) {
@@ -41,16 +41,16 @@ const Reports = (): JSX.Element | null => {
         filter(curr => {
             const { startDate, endDate } = reportDates;
             if (startDate && endDate) {
-                return new Date(curr.date.S) > new Date(startDate)
-                    && new Date(curr.date.S) < new Date(endDate)
+                return new Date(curr.date.S) >= new Date(startDate)
+                    && new Date(curr.date.S) <= new Date(endDate)
             } else { return false; }
         }), [expensesList, reportDates])
 
 
     const DataForPie = useMemo(() => {
         const groupWiseMap = dateWindowExpenses.reduce((acc, curr) => {
-            acc[curr.expenseType.S] = acc[curr.expenseType.S] ?
-                acc[curr.expenseType.S] + parseInt(curr.expense.N, 10)
+            acc[curr.expenseType.S.toUpperCase().trim()] = acc[curr.expenseType.S.toUpperCase().trim()] ?
+                acc[curr.expenseType.S.toUpperCase().trim()] + parseInt(curr.expense.N, 10)
                 : parseInt(curr.expense.N, 10);
             return acc;
         }, {} as { [k: string]: number });
