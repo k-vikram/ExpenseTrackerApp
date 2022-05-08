@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { signIn } from "../../actionCreators/auth";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { AuthState } from "../../store/reducers/auth";
+import { AuthState } from "../../store/storeTypes";
+
 // import { justSignUp } from "../../actionCreators/auth";
 
 const LoginPage = (): React.ReactElement | null => {
